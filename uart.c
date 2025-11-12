@@ -63,9 +63,6 @@ static void init_button(void) {
 //////////////////////////////////////////////////////////////////////////////
 
 // packet helpers
-uint8_t make_hit_byte(uint8_t player_id, uint8_t weapon_id) { 
-    return (uint8_t)(((player_id & 0x0F) << 4) | (weapon_id & 0x0F));
-}
 uint8_t make_hit_byte(uint8_t player_id_0_15, uint8_t team_0_3, uint8_t weapon_0_3)  //makes the byte for the player id set and the weapon id set
 {
     return (uint8_t)(((player_id_0_15 & 0x0F) << 4) | ((team_0_3 & 0x03) << 2) | ( weapon_0_3 & 0x03));
