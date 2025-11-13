@@ -5,8 +5,6 @@
 #include <string.h>
 #include "pico/stdlib.h"
 
-//#include "support.h"
-
 // Base library headers ncluded for your convenience.
 #include "hardware/gpio.h"
 #include "hardware/irq.h"
@@ -18,11 +16,7 @@
 #include "hardware/uart.h"
 #include "pico/rand.h"
 
-#include <stdint.h>
-#include "pwm.h"
-
-void pwm_hit_init(void);
-void pwm_hit_start(uint8_t team_id);
+#include "pwm.h" //our own pwm file 
 
 //////////////////////////////////////////////////////////////////////////////
 #define UART_ID      uart0
@@ -37,7 +31,7 @@ void pwm_hit_start(uint8_t team_id);
 #define TEAM_RED    0
 #define TEAM_BLUE   1
 #define TEAM_GREEN  2
-#define TEAM_YELLOW 3
+#define TEAM_YELLOW 3 //still dont know if we want thing (maybe make it white for all three go on?)
 
 // Set the local identity of the current gun
 static uint8_t MY_PLAYER_ID = 3;        // 0 - 15 (4 bits)
@@ -123,12 +117,11 @@ int main() {
                 // same team -> invalid packet for scoring; ignore
             } else {
                 //we need to flash the led and pause the thing (THIS NEEDS TO BE DONE)
-                 //needs to be PWM flash 
-                gpio_put(15, 1);
-                sleep_ms(40); //prevents flashing the led from the same hit multiple times
-
-                //pwm_hit_start(tx_team);
                 
+                gpio_put(15, 1); //for testing on bread board
+                //flash_led(tx_team); //pwm func call
+
+                sleep_ms(40); //prevents flashing the led from the same hit multiple times   
             }
         }
         
