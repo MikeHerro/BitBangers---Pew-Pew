@@ -58,10 +58,6 @@ void init_button(void) {
     gpio_init(BUTTON_PIN); //use pin 3
     gpio_set_dir(BUTTON_PIN, GPIO_IN);
     gpio_pull_down(BUTTON_PIN); // since button is active HIGH
-
-    gpio_init(15);
-    gpio_set_dir(15, 1);
-
 }
 //////////////////////////////////////////////////////////////////////////////
 
@@ -80,25 +76,29 @@ void send_hit(uint8_t player_id, uint8_t team, uint8_t weapon) {
     }
 }
 
-// unpack fields from one byte (for RX)
+// unpack fields from one byte (for RX) 
+//old but masking, ask alex if this makes sense
+
 uint8_t get_player(uint8_t b) { return (b >> 4) & 0x0F; } //gets the player id
 uint8_t get_team  (uint8_t b) { return (b >> 2) & 0x03; } //gets the team id
 uint8_t get_weapon(uint8_t b) { return  b       & 0x03; } //gets the weapon id
 
 //////////////////////////////////////////////////////////////////////////////
 int main() {
-    init_uart();
+    init_uart();    
     init_button();
-    pwm_hit_init();
 
     bool last = false;
+    
 
     while (1) {
+        gpio_init(15);
+        gpio_set_dir(15, 1);
+        gpio_put(15, 0);
 
         //TX stuff
         bool now = gpio_get(BUTTON_PIN);
         if (now && !last) { //this will prevent someone from holding the button (edge detecting bassically)
-            // button pressed -> send packet
             send_hit(MY_PLAYER_ID, MY_TEAM, MY_WEAPON);
             sleep_ms(20); // tiny debounce so one press = one shot
         }
@@ -107,24 +107,22 @@ int main() {
         //RX stuff
         if (uart_is_readable(UART_ID)) {
             uint8_t b = uart_getc(UART_ID);
-
+            
             uint8_t tx_team   = get_team(b);
             uint8_t tx_player = get_player(b);
             uint8_t tx_weapon = get_weapon(b);
-
+            
             // reject friendly fire
-            if (tx_team == MY_TEAM) {
-                // same team -> invalid packet for scoring; ignore
-            } else {
+            if (tx_team != MY_TEAM) {
                 //we need to flash the led and pause the thing (THIS NEEDS TO BE DONE)
                 
-                gpio_put(15, 1); //for testing on bread board
+                gpio_put(15, 0);
                 //flash_led(tx_team); //pwm func call
 
-                sleep_ms(40); //prevents flashing the led from the same hit multiple times   
-            }
+                sleep_ms(40); //prevents flashing the led from the same hit multiple times  
+                //gpio_put(15, 1);
+            } 
         }
-        
         sleep_ms(1);
     }
 }
