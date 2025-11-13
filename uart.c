@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pico/stdlib.h"
-#include "support.h"
+//#include "support.h"
 
 // Base library headers ncluded for your convenience.
 #include "hardware/gpio.h"
@@ -59,6 +59,10 @@ void init_button(void) {
     gpio_init(BUTTON_PIN); //use pin 3
     gpio_set_dir(BUTTON_PIN, GPIO_IN);
     gpio_pull_down(BUTTON_PIN); // since button is active HIGH
+
+    gpio_init(15);
+    gpio_set_dir(15, 1);
+
 }
 //////////////////////////////////////////////////////////////////////////////
 
@@ -113,7 +117,8 @@ int main() {
                 // same team -> invalid packet for scoring; ignore
             } else {
                 //we need to flash the led and pause the thing (THIS NEEDS TO BE DONE)
-                flash_hit_led(); //needs to be PWM flash 
+                 //needs to be PWM flash 
+                gpio_put(15, 1);
                 sleep_ms(40); //prevents flashing the led from the same hit multiple times
                 
             }
