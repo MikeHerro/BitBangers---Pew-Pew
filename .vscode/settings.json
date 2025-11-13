@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "stdio.h": "c",
-        "pwm.h": "c"
+        "pwm.h": "c",
+        "stdlib.h": "c"
     }
 }

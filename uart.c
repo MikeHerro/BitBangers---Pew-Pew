@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pico/stdlib.h"
+
 //#include "support.h"
 
 // Base library headers ncluded for your convenience.
@@ -17,7 +18,11 @@
 #include "hardware/uart.h"
 #include "pico/rand.h"
 
+#include <stdint.h>
+#include "pwm.h"
 
+void pwm_hit_init(void);
+void pwm_hit_start(uint8_t team_id);
 
 //////////////////////////////////////////////////////////////////////////////
 #define UART_ID      uart0
@@ -90,6 +95,7 @@ uint8_t get_weapon(uint8_t b) { return  b       & 0x03; } //gets the weapon id
 int main() {
     init_uart();
     init_button();
+    pwm_hit_init();
 
     bool last = false;
 
@@ -120,6 +126,8 @@ int main() {
                  //needs to be PWM flash 
                 gpio_put(15, 1);
                 sleep_ms(40); //prevents flashing the led from the same hit multiple times
+
+                //pwm_hit_start(tx_team);
                 
             }
         }
