@@ -55,7 +55,7 @@ void init_uart() {
 }
 
 
-static void init_button(void) {
+void init_button(void) {
     gpio_init(BUTTON_PIN); //use pin 3
     gpio_set_dir(BUTTON_PIN, GPIO_IN);
     gpio_pull_down(BUTTON_PIN); // since button is active HIGH
